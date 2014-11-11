@@ -1,4 +1,4 @@
-import helpers.py
+import helpers
 import string
 
 def guessPassword(sweetwords):
@@ -88,21 +88,21 @@ def getSubwords(word):
     contained in the string
     """
 
-        wordMark = -1
-        wordStart = -1
+        # wordMark = -1
+        # wordStart = -1
 
-        subwordCandArray = []
-        subwordArray = []
-
-
+        # subwordCandArray = []
+        # subwordArray = []
 
 
-        for sub in wordCand:
-            #start from the index of the last letter, and go back,
-            for i in xrange(sub[1],sub[0]+1):
-                #start from the first letter, up to the letter we're checking.
-                for j in xrange(sub[0],i):
-                    if h.isWord(pw[i:j]):
+
+
+        # for sub in wordCand:
+        #     #start from the index of the last letter, and go back,
+        #     for i in xrange(sub[1],sub[0]+1):
+        #         #start from the first letter, up to the letter we're checking.
+        #         for j in xrange(sub[0],i):
+        #             if h.isWord(pw[i:j]):
 
 
 def reverseMunge(sweetword):
@@ -114,7 +114,9 @@ def reverseMunge(sweetword):
     """
     cleanword = ''
     for char in sweetword:
-        cleanword.append(helpers.unMunge())
+        cleanword += helpers.unMunge(char)
+
+    return cleanword
 
 
 def shortestNonEmpty(*args):
@@ -151,7 +153,12 @@ if __name__ == '__main__':
     test_list_3 = ['heyyo', 'here']
     assert (shortestNonEmpty(test_list_1, test_list_2, test_list_3) == test_list_3)
 
+    ## 1 test for reverseMunge
+    test_password = '#5pongEbobmyM@ns0d0ntt0uchh!m'
+    print reverseMunge(test_password)
+    assert (reverseMunge(test_password) == 'hspongebobmymansodonttouchhim')
+
     ## 1 test for getSubwords
     
-    ## 1 test for reverseMunge
+    
     print "all tests passed!"

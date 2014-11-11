@@ -9,8 +9,8 @@ replacements = {
     '4': {'4','A','a'},
     '5': {'5','s','$'},
     '6': {'6','b'},
-    '7': {'7','1','L'},
-    '8': {'8','6','B'},
+    '7': {'7','1','l'},
+    '8': {'8','6','b'},
     '9': {'9','p','P'},
     '0': {'0','o','O'},
     '@': {'a','A','@','4'},
@@ -19,10 +19,10 @@ replacements = {
     '?': {'a','A','@','4'},
     '&': {'e','E','3','&','6','9','#'},
     '#': {'3','&','6','9','#','h','H','#'},
-    '!': {'1','7','i','I','l','!','|'},
-    '|': {'1','7','i','I','l','!','|'},
+    '!': {'1','7','i','I','!','|'},
+    '|': {'1','7','i','I','!','|'},
     ']': {'j','J',']'},
-    '<': {'k','K','X','<'},
+    '<': {'x','<'},
     '$': {'s','S','5','$'},
     '+': {'t','T','7','+'},
     '^': {'v','V','^'},
@@ -35,7 +35,16 @@ def unMunge(char):
     :param char: character
     :return: :
     """
-    return replacements[char].intersection(set(string.ascii_lowercase))[0]
+    retval = None
+
+    # if its a normal character, return it
+    characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    if char in characters:
+        retval = char.lower()
+    else:
+        retval = replacements[char].intersection(set(string.ascii_lowercase)).pop()
+
+    return retval
 
 def isWord(stringOfLetters):
     """
