@@ -22,7 +22,7 @@ def guessPassword(sweetwords):
         if len(subword_tuple) == 0: # no subwords
             guesses_1.remove(word)
             continue
-        subwords[word] = subword
+        subwords[word] = subword_tuple
 
     ## ROUND 2: Assume that sweets with more subwords than other sweets are better
     guesses_2 = shortestNonEmpty(sweetwords, guesses_1)
@@ -62,13 +62,19 @@ def guessPassword(sweetwords):
     final_guess_list = shortestNonEmpty(sweetwords, guesses_1, guesses_2, guesses_3, guesses_4)
     return random.choice(final_guess_list)
 
-def getMaxLengthWord(subword):
+def getMaxLengthWord(subword_dict):
     """
     dict -> int
     """
-    tuples_of_lengths = ((len(subword) for subword in list_of_subwords) for 
-                          word, list_of_subwords in subwords)
-    all_lengths = (length in tuple_of_lens for tuple_of_lens in tuples_of_lengths)
+    ## Construct a tuple of tuples, where the ith inner tuple is 
+    ## (length1, length2, .., lengthn ) for the n subwords of the ith key
+    ## which is itself a word
+    all_lengths = []
+    for key in subword_dict.keys():
+        for subword in subword_dict[key]:
+            all_lengths.append(len(subword))
+
+    ## Return the max
     max_length_word = max(all_lengths)
 
     return max_length_word
@@ -109,6 +115,7 @@ def reverseMunge(sweetword):
     for char in sweetword:
         cleanword.append(helpers.unMunge())
 
+
 def shortestNonEmpty(*args):
     """
     list list ... list -> list
@@ -116,19 +123,34 @@ def shortestNonEmpty(*args):
     Given greater than or equal to 1 lists, returns a copy the shortest non-length-zero
     list. Raises an error if all lists are of length 0
     """
-    if len(*args) == 0:
+    ## Make sure we got at least one list as input
+    if len(args) == 0:
         raise ValueError("Must input at least 1 list to shortestNonEmpty")
 
-    lengths = [len(input_list) for input_list in *args]
+    ## Calculate the lengths of all the lists, and replace zeros with infinity
+    lengths = [len(input_list) for input_list in args]
     if sum(lengths) == 0:
         raise ValueError("At least one input list to shortestNonEmpty must have nonzero length")
+    lengths = [length if length != 0 else float('inf') for length in lengths]
 
-    return [elem for elem in *args[lengths.index(min(lengths))]]
+    ## Return a copy of the shortest non empty list
+    return [elem for elem in args[lengths.index(min(lengths))]]
 
 if __name__ == '__main__':
-    ## 1 test for getSubwords
+    ## 1 test for getMaxLength Words
+    test_subword_dict = {
+                          'bicycle76alpha': ('bicycle', 'alpha', 'cycle', 'alpha'),
+                          '#spongebob': ('spongebob', 'sponge', 'pong', 'pon', 'on')
+                        }
+    assert (getMaxLengthWord(test_subword_dict) == 9)
 
     ## 1 test for shortestNonEmpty
+    test_list_1 = ['heyyo', 'mypassword', 'here', 'stupidpassword', 'jessica']
+    test_list_2 = []
+    test_list_3 = ['heyyo', 'here']
+    assert (shortestNonEmpty(test_list_1, test_list_2, test_list_3) == test_list_3)
 
+    ## 1 test for getSubwords
+    
     ## 1 test for reverseMunge
-    pass
+    print "all tests passed!"
