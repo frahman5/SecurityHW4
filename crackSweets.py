@@ -64,10 +64,11 @@ def guessPassword(sweetwords):
 def getMaxLengthWord(subword_dict):
     """
     dict -> int
+
+    dict format is 
+        word: (subword1, subword2, ..., subwordn)
     """
-    ## Construct a tuple of tuples, where the ith inner tuple is 
-    ## (length1, length2, .., lengthn ) for the n subwords of the ith key
-    ## which is itself a word
+    ## Construct a list of the lengths of all the subwords in subword_dict values
     all_lengths = []
     for key in subword_dict.keys():
         for subword in subword_dict[key]:
