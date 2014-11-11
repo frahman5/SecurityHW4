@@ -15,47 +15,62 @@ def guessPassword(sweetwords):
     import random
 
     ## Round 1: If there are sweets with real words, get rid of sweets without real words
-    guesses_1 = sweetwords
-    subwords = {}
+    guesses_1 = shortestNonEmpty(sweetwords)
+    subwords_dict = {}
     for word in sweetwords:
         subword_tuple = getSubwords(word)
+        # print "word: {} subword_tuple: {} ".format(word, subword_tuple)
         if len(subword_tuple) == 0: # no subwords
             guesses_1.remove(word)
             continue
-        subwords[word] = subword_tuple
+        subwords_dict[word] = subword_tuple
 
-    ## ROUND 2: Assume that sweets with more subwords than other sweets are better
-    guesses_2 = shortestNonEmpty(sweetwords, guesses_1)
-    assert len(guesses_2) == len(subwords.keys())
-    max_num_words = max(len(list_of_subwords) for word, list_of_subwords in subwords)
-    for word in sweetwords:
-        if word not in guesses_2:
-            continue
-        num_subwords = len(subwords[word])
-        if num_subwords < max_num_words:
-            guesses_2.remove(word)
-            del subwords[word]
+    if len(guesses_1) != 0:
+        ## ROUND 2: Assume that sweets with more subwords than other sweets are better
+        guesses_2 = shortestNonEmpty(sweetwords, guesses_1)
+        assert ((len(guesses_2) == len(subwords_dict.keys())) or len(guesses_1) == 0)
+        max_num_words = max(len(list_of_subwords) for list_of_subwords in subwords_dict.itervalues())
+        for word in sweetwords:
+            if word not in guesses_2:
+                continue
+            num_subwords = len(subwords_dict[word])
+            if num_subwords < max_num_words:
+                guesses_2.remove(word)
+                del subwords_dict[word]
 
-    ## Round 3: Assume that sweets with longer subwords are better
-    guesses_3 = shortestNonEmpty(sweetwords, guesses_1, guesses_2)
-    assert len(guesses_3) == len(subwords.keys())
-    max_length_word = getMaxLengthWord(subwords)
-    for word in sweetwords:
-        if word not in guesses_3:
-            continue
-        len_longest_subword = max((len(subword) for subword in word_info[word]))
-        if len_longest_subword < max_length_word:
-            guesses_3.remove(word)
-            del subwords[word]
+        ## Round 3: Assume that sweets with longer subwords are better
+        guesses_3 = shortestNonEmpty(sweetwords, guesses_1, guesses_2)
+        assert ((len(guesses_3) == len(subwords_dict.keys())) or len(guesses_1) == 0)
+        max_length_word = getMaxLengthWord(subwords_dict)
+        for word in sweetwords:
+            if word not in guesses_3:
+                continue
+            len_longest_subword = max((len(subword) for subword in subwords_dict[word]))
+            if len_longest_subword < max_length_word:
+                guesses_3.remove(word)
+                del subwords_dict[word]
+    else:
+        guesses_2 = []
+        guesses_3 = []
 
     ## Round 4: If reverse munging results in more subwords, its probably a password
     guesses_4 = shortestNonEmpty(sweetwords, guesses_1, guesses_2, guesses_3)
-    assert len(guesses_4) == len(subwords.keys())
+    assert ((len(guesses_4) == len(subwords_dict.keys())) or len(guesses_1) == 0)
     for word in sweetwords:
+        # skip the unnecessary ones
         if word not in guesses_4:
             continue
+
+        # reverse munge it to find more words
         reverse_munged_sweet = reverseMunge(word)
-        if len(getSubwords(reverse_munged_sweet)) <= len(word_info[word]):
+
+        # how many subwords did we used to have?
+        num_previous_words = 0
+        if len(guesses_1) != 0:
+            num_previous_words = len(subwords_dict[word])
+
+        # if we dont have more now, remove it
+        if len(getSubwords(reverse_munged_sweet)) <= num_previous_words:
             guesses_4.remove(word)
 
     ## Make a choice: Return a random choice from our pruned list
@@ -173,17 +188,34 @@ if __name__ == '__main__':
     test_password_2 = '#spongebob'
     assert set(getSubwords(test_password_1)) == set(test_subword_dict[test_password_1])
     assert set(getSubwords(test_password_2)) == set(test_subword_dict[test_password_2])
-    
-    
     print "all tests passed!"
 
     ## test for guessPasswords
-
     import os
-    path = '/Users/oza/GitHub/SecurityHW4/toCrack/Group FROZA'
+    # pathtest = '/Users/faiyamrahman/Documents/CTech/SecurityAndPrivacyConcepts/HW4/test'
+    path1 = '/Users/faiyamrahman/Documents/CTech/SecurityAndPrivacyConcepts/HW4/tocrack/Group FROZA'
+    path2 = '/Users/faiyamrahman/Documents/CTech/SecurityAndPrivacyConcepts/HW4/tocrack/group1'
+    path3 = '/Users/faiyamrahman/Documents/CTech/SecurityAndPrivacyConcepts/HW4/tocrack/group3_pswds'
+    path4 = '/Users/faiyamrahman/Documents/CTech/SecurityAndPrivacyConcepts/HW4/tocrack/honeywords'
+    path5 = '/Users/faiyamrahman/Documents/CTech/SecurityAndPrivacyConcepts/HW4/tocrack/TeamShaZafDan'
+    for path in (path3, path4, path5):
+        guesses = []
+        files = os.listdir(path)
+        files.sort(key=lambda filename: int(filename))
+        for filename in files:
+            print filename
+            # open it
+            with open(path + '/' + filename, 'r') as f:
+                # get the sweets
+                sweets = f.readlines()
+                sweets = [sweet.replace('\n','').replace('\r','') for sweet in sweets]
+                
+                # guess the passwords
+                guesses.append(guessPassword(sweets) + '\n')
 
-    guesses = []
-    for filename in os.listdir(path):
-        f = open(path + '/' + filename, 'r')
-        guesses.append(filename + ',' + guessPassword(f.readlines()))
-        print guesses
+        group_name = path.split('/')[-1] + '_cracked.csv'
+        with open(group_name, "w+") as output_file:
+            output_file.writelines(guesses)
+        # print guess_dict
+    
+    

@@ -22,6 +22,8 @@ replacements = {
     '!': {'1','7','i','I','!','|'},
     '|': {'1','7','i','I','!','|'},
     ']': {'j','J',']'},
+    '/': {'l'},
+    ':': {'l'},
     '<': {'x','<'},
     '$': {'s','S','5','$'},
     '+': {'t','T','7','+'},
@@ -39,10 +41,17 @@ def unMunge(char):
 
     # if its a normal character, return it
     characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    others = ' _.,;-'
     if char in characters:
         retval = char.lower()
+    elif char in others:
+        retval = char
     else:
-        retval = replacements[char].intersection(set(string.ascii_lowercase)).pop()
+        try:
+            retval = replacements[char].intersection(set(string.ascii_lowercase)).pop()
+        except:
+            print "add {} to others in unMunge.".format(char)
+            retval = char
 
     return retval
 
