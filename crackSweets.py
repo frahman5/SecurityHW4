@@ -87,23 +87,20 @@ def getSubwords(word):
     Given a string, returns a list of all english language words that are 
     contained in the string
     """
+    subwordArray = []
 
-        # wordMark = -1
-        # wordStart = -1
+    #start from the index of the last letter, and go back,
+    for i in xrange(0,len(word)):
+        #start from the first letter, up to the letter we're checking.
+        for j in xrange(len(word), 0):
+            if j - i > 1:
+                if helpers.isWord(word[i:j]):
+                    subwordArray.append(helpers.isWord(word[i:j]))
+                    break
+                else:
+                    continue
 
-        # subwordCandArray = []
-        # subwordArray = []
-
-
-
-
-        # for sub in wordCand:
-        #     #start from the index of the last letter, and go back,
-        #     for i in xrange(sub[1],sub[0]+1):
-        #         #start from the first letter, up to the letter we're checking.
-        #         for j in xrange(sub[0],i):
-        #             if h.isWord(pw[i:j]):
-
+    return subwordArray
 
 def reverseMunge(sweetword):
     """
