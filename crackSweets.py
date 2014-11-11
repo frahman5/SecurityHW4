@@ -102,6 +102,8 @@ def getSubwords(word):
                 else:
                     continue
 
+    # Remove subwords of subwords (e.g if we have 'bicycle' and 'cycle', we only
+    # want 'bicycle')
     subwordArrayCopy1 = [elem for elem in subwordArray]
     subwordArrayCopy2 = [elem for elem in subwordArray]
     for word1 in subwordArrayCopy1:
