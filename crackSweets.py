@@ -28,7 +28,6 @@ def guessPassword(sweetwords):
     if len(guesses_1) != 0:
         ## ROUND 2: Assume that sweets with more subwords than other sweets are better
         guesses_2 = shortestNonEmpty(sweetwords, guesses_1)
-        assert ((len(guesses_2) == len(subwords_dict.keys())) or len(guesses_1) == 0)
         max_num_words = max(len(list_of_subwords) for list_of_subwords in subwords_dict.itervalues())
         for word in sweetwords:
             if word not in guesses_2:
@@ -40,7 +39,6 @@ def guessPassword(sweetwords):
 
         ## Round 3: Assume that sweets with longer subwords are better
         guesses_3 = shortestNonEmpty(sweetwords, guesses_1, guesses_2)
-        assert ((len(guesses_3) == len(subwords_dict.keys())) or len(guesses_1) == 0)
         max_length_word = getMaxLengthWord(subwords_dict)
         for word in sweetwords:
             if word not in guesses_3:
@@ -55,7 +53,6 @@ def guessPassword(sweetwords):
 
     ## Round 4: If reverse munging results in more subwords, its probably a password
     guesses_4 = shortestNonEmpty(sweetwords, guesses_1, guesses_2, guesses_3)
-    assert ((len(guesses_4) == len(subwords_dict.keys())) or len(guesses_1) == 0)
     for word in sweetwords:
         # skip the unnecessary ones
         if word not in guesses_4:
@@ -193,17 +190,22 @@ if __name__ == '__main__':
     ## test for guessPasswords
     import os
     # pathtest = '/Users/faiyamrahman/Documents/CTech/SecurityAndPrivacyConcepts/HW4/test'
-    path1 = '/Users/faiyamrahman/Documents/CTech/SecurityAndPrivacyConcepts/HW4/tocrack/Group FROZA'
-    path2 = '/Users/faiyamrahman/Documents/CTech/SecurityAndPrivacyConcepts/HW4/tocrack/group1'
-    path3 = '/Users/faiyamrahman/Documents/CTech/SecurityAndPrivacyConcepts/HW4/tocrack/group3_pswds'
-    path4 = '/Users/faiyamrahman/Documents/CTech/SecurityAndPrivacyConcepts/HW4/tocrack/honeywords'
-    path5 = '/Users/faiyamrahman/Documents/CTech/SecurityAndPrivacyConcepts/HW4/tocrack/TeamShaZafDan'
+    path1 = 'tocrack/Group FROZA'
+    path2 = 'tocrack/group1'
+    path3 = 'tocrack/group3_pswds'
+    path4 = 'tocrack/honeywords'
+    path5 = 'tocrack/TeamShaZafDan'
     for path in (path3, path4, path5):
         guesses = []
         files = os.listdir(path)
+        if '.DS_Store' in files:
+            files.remove('.DS_Store')
         files.sort(key=lambda filename: int(filename))
         for filename in files:
             print filename
+            if filename == '2':
+                import pdb
+                pdb.set_trace()
             # open it
             with open(path + '/' + filename, 'r') as f:
                 # get the sweets
