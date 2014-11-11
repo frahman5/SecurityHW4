@@ -1,4 +1,5 @@
-import helpers
+import helpers.py
+import string
 
 def guessPassword(sweetwords):
     """
@@ -86,7 +87,23 @@ def getSubwords(word):
     Given a string, returns a list of all english language words that are 
     contained in the string
     """
-    pass
+
+        wordMark = -1
+        wordStart = -1
+
+        subwordCandArray = []
+        subwordArray = []
+
+
+
+
+        for sub in wordCand:
+            #start from the index of the last letter, and go back,
+            for i in xrange(sub[1],sub[0]+1):
+                #start from the first letter, up to the letter we're checking.
+                for j in xrange(sub[0],i):
+                    if h.isWord(pw[i:j]):
+
 
 def reverseMunge(sweetword):
     """
@@ -97,11 +114,8 @@ def reverseMunge(sweetword):
     """
     cleanword = ''
     for char in sweetword:
-        if len(helpers.unMunge(char)) < 2:
-            cleanword.append(helpers.unMunge())
-        else:
-            for choice in helpers.unMunge(char):
-                pass
+        cleanword.append(helpers.unMunge())
+
 
 def shortestNonEmpty(*args):
     """
