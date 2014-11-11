@@ -92,13 +92,25 @@ def getSubwords(word):
     #start from the index of the last letter, and go back,
     for i in xrange(0,len(word)):
         #start from the first letter, up to the letter we're checking.
-        for j in xrange(len(word), 0):
+        for j in xrange(len(word), 0, -1):
             if j - i > 1:
-                if helpers.isWord(word[i:j]):
-                    subwordArray.append(helpers.isWord(word[i:j]))
+                subword = word[i:j]
+                # print "considering word: {}".format(word[i:j])
+                if helpers.isWord(subword):
+                    subwordArray.append(word[i:j])
                     break
                 else:
                     continue
+
+    subwordArrayCopy1 = [elem for elem in subwordArray]
+    subwordArrayCopy2 = [elem for elem in subwordArray]
+    for word1 in subwordArrayCopy1:
+        for word2 in subwordArrayCopy2:
+            if word2 == word1:
+                continue
+            if word1 in word2:
+                subwordArray.remove(word1)
+                break
 
     return subwordArray
 
@@ -139,10 +151,10 @@ def shortestNonEmpty(*args):
 if __name__ == '__main__':
     ## 1 test for getMaxLength Words
     test_subword_dict = {
-                          'bicycle76alpha': ('bicycle', 'alpha', 'cycle', 'alpha'),
-                          '#spongebob': ('spongebob', 'sponge', 'pong', 'pon', 'on')
+                          'bicycle76alpha': ('bicycle', 'alpha'),
+                          '#spongebob': ('sponge', 'bob')
                         }
-    assert (getMaxLengthWord(test_subword_dict) == 9)
+    assert (getMaxLengthWord(test_subword_dict) == 7)
 
     ## 1 test for shortestNonEmpty
     test_list_1 = ['heyyo', 'mypassword', 'here', 'stupidpassword', 'jessica']
@@ -152,10 +164,13 @@ if __name__ == '__main__':
 
     ## 1 test for reverseMunge
     test_password = '#5pongEbobmyM@ns0d0ntt0uchh!m'
-    print reverseMunge(test_password)
     assert (reverseMunge(test_password) == 'hspongebobmymansodonttouchhim')
 
     ## 1 test for getSubwords
+    test_password_1 = 'bicycle76alpha'
+    test_password_2 = '#spongebob'
+    assert set(getSubwords(test_password_1)) == set(test_subword_dict[test_password_1])
+    assert set(getSubwords(test_password_2)) == set(test_subword_dict[test_password_2])
     
     
     print "all tests passed!"
