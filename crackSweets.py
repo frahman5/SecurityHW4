@@ -1,3 +1,5 @@
+import helpers.py
+
 def guessPassword(sweetwords):
     """
     listOfStrings -> string
@@ -86,7 +88,12 @@ def reverseMunge(sweetword):
     Given a string, "reverse munges" nonalpha characters to "close" alpha characters
     (e.g 5->s) and returns the resultant string
     """
-    pass
+    cleanword = ''
+    for char in sweetword:
+        if len(helpers.unMunge(char)) < 2:
+            cleanword.append(helpers.unMunge())
+        else:
+            for choice in helpers.unMunge(char):
 
 def shortestNonEmpty(*args):
     """
