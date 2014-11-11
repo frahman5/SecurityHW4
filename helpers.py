@@ -35,7 +35,7 @@ def unMunge(char):
     :param char: character
     :return: :
     """
-    return replacements[char].intersection(set(string.ascii_lowercase))
+    return replacements[char].intersection(set(string.ascii_lowercase))[0]
 
 def isWord(stringOfLetters):
     """
