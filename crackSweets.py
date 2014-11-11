@@ -159,3 +159,14 @@ if __name__ == '__main__':
     
     
     print "all tests passed!"
+
+    ## test for guessPasswords
+
+    import os
+    path = '/Users/oza/GitHub/SecurityHW4/toCrack/Group FROZA'
+
+    guesses = []
+    for filename in os.listdir(path):
+        f = open(path + '/' + filename, 'r')
+        guesses.append(filename + ',' + guessPassword(f.readlines()))
+        print guesses
